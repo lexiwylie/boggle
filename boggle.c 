@@ -6,9 +6,24 @@
 
 int main(void)
 {
+  int M = 0;
+  int N = 0;
 
-  printf("Enter the board size: ");
-  int boardSize = readInt(stdin);
+  printf("The board size can be M x N where M and N are both integers greater than or equal to 4.\n\n");
+
+  while(M < 4)
+  {
+    printf("Enter your desired M, where M is a integer greater than or equal to 4: ");
+    M = readInt(stdin);
+  }
+
+  while(N < 4)
+  {
+    printf("Enter your desired N, where N is a integer greater than or equal to 4: ");
+    N = readInt(stdin);
+  }
+
+  printf("\nThe board size will be %d x %d with the board containing %d total cubes.\n", M, N, M*N);
 
   return 0;
 }
