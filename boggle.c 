@@ -1,0 +1,14 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "scanner.c"
+
+int main(void)
+{
+
+  printf("Enter the board size: ");
+  int boardSize = readInt(stdin);
+
+  return 0;
+}
