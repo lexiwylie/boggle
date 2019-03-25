@@ -4,6 +4,34 @@
 
 #include "scanner.c"
 
+char** createBoard(int M, int N) // allocates memory for board
+{
+
+  int i = 0;
+  int j = 0;
+
+  char** board = malloc(M * N * sizeof(char*));
+  for(i = 0; i < M; i++)
+  {
+    for(j = 0; j < N; j++)
+    {
+      *(board + i*M + N) = "test";
+    }
+  }
+
+  for(i = 0; i < M; i++)
+  {
+    for(j = 0; j < N; j++)
+    {
+      printf("%s ", *(board + i*M + N));
+    }
+    printf("\n");
+  }
+
+  return board;
+}
+
+
 int main(void)
 {
   int M = 0;
@@ -24,6 +52,9 @@ int main(void)
   }
 
   printf("\nThe board size will be %d x %d with the board containing %d total cubes.\n", M, N, M*N);
+
+  char** board = createBoard(M, N);
+  //char** board = fillBoard(board);
 
   return 0;
 }
