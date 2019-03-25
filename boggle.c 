@@ -11,11 +11,18 @@ char** createBoard(int M, int N) // allocates memory for board
   int j = 0;
 
   char** board = malloc(M * N * sizeof(char*));
+
+  for(i = 0; i < M; i++)
+  {
+    free(board[i]);
+  }
+  free(board);
+
   for(i = 0; i < M; i++)
   {
     for(j = 0; j < N; j++)
     {
-      *(board + i*M + N) = "test";
+      *(board + i*M + N) = "REPLACETHISSTRING";
     }
   }
 
@@ -31,6 +38,39 @@ char** createBoard(int M, int N) // allocates memory for board
   return board;
 }
 
+
+/*char** fillBoard(char** board) // fills board with randomly assigned cube
+{
+  printf("The board is being created.\n");
+
+  char possibleCubes[36][12] =
+  {
+    "AAAFRS", "AAEEEE", "AAEEOO", "AAFIRS", "ABDEIO", "ADENNN", "AEEEEM",
+    "AEEGMU", "AEGMNN", "AEILMN", "AEINOU", "AFIRSY", "BBJKXZ", "CCENST",
+    "CDDLNN", "CEIITT", "CEIPST", "CFGNUY", "DDHNOT", "DHHLOR", "DHHNOW",
+    "DHLNOR", "EHILRS", "EIILST", "EILPST", "EIO###", "EMTTTO", "ENSSSU",
+    "GORRVW", "HIRSTV", "HOPRST", "IPRSYY", "NOOTUW", "OOOTTU", "JKQuWXZ",
+    "AnErHeInQuTh"
+  }
+
+
+  int i = 0;
+  int j = 0;
+  pCubesSize = 36;
+  char currentCube[13] = "ABCXYZABCXYZABC";
+
+  for(i = 0; i < M; i++)
+  {
+    for(j = 0; j < N; j++)
+    {
+      currentCube = possibleCubes[srand(time(NULL)) % pCubesSize];
+      cubeLetter =
+      strcpy(*(board + i*M + N), cubeLetter);
+    }
+  }
+
+  return board;
+}*/
 
 int main(void)
 {
