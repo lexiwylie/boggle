@@ -49,7 +49,7 @@ char** createBoard(int M, int N) // allocates memory for big boggle and fills th
   {
     for(j = 0; j < N; j++)
     {
-      *(board + i*N + j) = cubes[j][i]; // REMOVE [i][j] and make random! rand() % len
+      *(board + i*N + j) = "test"; // REMOVE [i][j] and make random! rand() % len
     }
   }
 
