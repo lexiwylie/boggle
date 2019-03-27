@@ -10,7 +10,7 @@ struct Trie
   struct Trie *nextChar[26];
 };
 
-char** createBoard(int M, int N) // allocates memory for big boggle and fills the board with cubes
+char** createBoard(int M) // allocates memory for big boggle and fills the board with cubes
 {
   char *cube0[] = {"A", "A", "A", "F", "R", "S"};
   char *cube1[] = {"A", "A", "E", "E", "E", "E"};
@@ -51,24 +51,24 @@ char** createBoard(int M, int N) // allocates memory for big boggle and fills th
   int i = 0;
   int j = 0;
 
-  char** board = malloc(M * N * sizeof(char*));
+  char** board = malloc(M * M * sizeof(char*));
 
   for(i = 0; i < M; i++)
   {
-    for(j = 0; j < N; j++)
+    for(j = 0; j < M; j++)
     {
       int currentCube = random() % 25;
       int currentSide = random() % 6;
-      *(board + i*N + j) = cubes[currentCube][currentSide];
+      *(board + i*M + j) = cubes[currentCube][currentSide];
     }
   }
 
   printf("\n");
   for(i = 0; i < M; i++)
   {
-    for(j = 0; j < N; j++)
+    for(j = 0; j < M; j++)
     {
-      printf("%s ", *(board + i*N + j));
+      printf("%s ", *(board + i*M + j));
     }
     printf("\n");
   }
@@ -80,7 +80,7 @@ char** createBoard(int M, int N) // allocates memory for big boggle and fills th
   return board;
 }
 
-struct Trie* getNode()
+struct Trie* initializeNode()
 {
   struct Trie* node = malloc(sizeof(struct Trie));
   node->isEndOfWord = 0;
@@ -93,3 +93,63 @@ struct Trie* getNode()
 
   return node;
 }
+
+void insertWord(struct Trie* dictionaryTree, char word[])
+	{
+	  int i = 0;
+	  int index = 0;
+
+	  for(i = 0; i < strlen(word); i++)
+	  {
+	    int index = word[i] - 'a';
+
+	    if(dictionaryTree->nextChar[index] == NULL)
+	      dictionaryTree->nextChar[index] = initializeNode();
+
+	    dictionaryTree = dictionaryTree->nextChar[index];
+	  }
+	}
+
+	void printRules()
+	{
+	  printf("\n\nPRINT RULES HERE\n\n");
+	}
+
+	int setDifficulty()
+	{
+	  int difficulty = 0;
+	  printf("\n\nDIFFICULTY\n\n");
+	  printf("1 - EASY\n");
+	  printf("2 - MEDIUM\n");
+	  printf("3 - HARD\n\n");
+
+	  printf("Which difficulty would you like?: ");
+	  difficulty = readInt(stdin);
+	  return difficulty;
+	}
+
+	int setBoardSize()
+	{
+	  int M = 0;
+	  printf("\n\nBOARD SIZE\n\n");
+	  printf("\nThe board size can be M x M where M is an integer greater than or equal to 4.\n\n");
+
+	  while(M < 4)
+	  {
+	    printf("Enter your desired M, where M is a integer greater than or equal to 4: ");
+	    M = readInt(stdin);
+	  }
+
+	  printf("\nThe board size will be %d x %d with the board containing %d total cubes.\n\n", M, M, M*M);
+	  return M;
+	}
+
+	/*void freeDictionary(struct Trie* tree) {
+
+		int i;
+		for (i=0; i<26; i++)
+			if (tree->nextChar[i] != NULL)
+				freeDictionary(tree->nextChar[i]);
+
+		free(tree);
+	}*/
