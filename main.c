@@ -6,12 +6,11 @@
 
 int main(void)
 {
+  srandom(time(NULL));
   int M = 0;
   int N = 0;
   int mode = 0;
   int numPlayers = 0;
-  int numRounds = 0;
-  int countRounds = 0;
 
   printf("Welcome to Boggle. If you haven't yet, read the document attached to _____.\n\n");
 
@@ -61,16 +60,6 @@ int main(void)
 
   /*
 
-  ------------- SELECT NUMBER OF ROUNDS -------------
-
-  */
-
-  printf("\nHow many rounds would you like to play?\n");
-  printf("Enter the number of desired rounds: ");
-  numRounds = readInt(stdin);
-
-  /*
-
   ----------- SELECT BOARD DIMENSIONS ----------
   Just a note: The board size can only be set
   once and cannot be changed from round to round.
@@ -93,12 +82,32 @@ int main(void)
 
     printf("\nThe board size will be %d x %d with the board containing %d total cubes.\n", M, N, M*N);
 
-  while(countRounds < numRounds)
+  /*
+
+  -------- CREATE BOARD --------
+
+  */
+
+  char** board = createBoard(M, N);
+
+  /*
+
+  -------- READ DICTIONARY INTO TRIE --------
+
+  */
+
+  struct Trie* dictionaryTree = getNode();
+  FILE *fp = fopen("dictionary.txt", "r");
+
+  char currentWord[100];
+  while(!feof(fp))
   {
-    char** board = createBoard(M, N);
-    
-    countRounds++;
+    fgets(currentWord, 100, fp);
+    printf("%s\n", currentWord);
+    insertWord(dictionaryTree, currentWord, 0);
   }
+
+  fclose(fp);
 
   return 0;
 }

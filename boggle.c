@@ -4,6 +4,12 @@
 #include <time.h>
 #include "scanner.c"
 
+struct Trie
+{
+  int isEndOfWord; // isLeaf = 1 when the current node is a leaf node
+  struct Trie *nextChar[26];
+};
+
 char** createBoard(int M, int N) // allocates memory for big boggle and fills the board with cubes
 {
   char *cube0[] = {"A", "A", "A", "F", "R", "S"};
@@ -40,6 +46,8 @@ char** createBoard(int M, int N) // allocates memory for big boggle and fills th
                      cube24
                     };
 
+  int currentCube = 0;
+  int currentSide = 0;
   int i = 0;
   int j = 0;
 
@@ -49,7 +57,9 @@ char** createBoard(int M, int N) // allocates memory for big boggle and fills th
   {
     for(j = 0; j < N; j++)
     {
-      *(board + i*N + j) = "test"; // REMOVE [i][j] and make random! rand() % len
+      int currentCube = random() % 25;
+      int currentSide = random() % 6;
+      *(board + i*N + j) = cubes[currentCube][currentSide];
     }
   }
 
@@ -64,11 +74,22 @@ char** createBoard(int M, int N) // allocates memory for big boggle and fills th
   }
   printf("\n");
 
-  /*for(i = 0; i < M; i++)
-  {
-    free(board[i]);
-  }
-  free(board); */
+
+  free(board);
 
   return board;
+}
+
+struct Trie* getNode()
+{
+  struct Trie* node = malloc(sizeof(struct Trie));
+  node->isEndOfWord = 0;
+
+  int i = 0;
+  for(i = 0; i < 26; i++)
+  {
+    node->nextChar[i] = NULL;
+  }
+
+  return node;
 }
