@@ -4,41 +4,44 @@
 #include <time.h>
 #include "scanner.c"
 
+const int DX[] = { 0, -1, -1, -1, 1, 1, 1, 0 };
+const int DY[] = { 1, 0, 1, 1, -1, 0, -1, -1 };
+
 struct Trie
 {
-  int isEndOfWord; // isLeaf = 1 when the current node is a leaf node
+  int isLeaf; // isLeaf = 1 when the current node is a leaf node
   struct Trie *nextChar[26];
 };
 
-char** createBoard(int M) // allocates memory for big boggle and fills the board with cubes
+char* createBoard(int M) // allocates memory for boggle and fills the board with cubes
 {
-  char *cube0[] = {"A", "A", "A", "F", "R", "S"};
-  char *cube1[] = {"A", "A", "E", "E", "E", "E"};
-  char *cube2[] = {"A", "A", "F", "I", "R", "S"};
-  char *cube3[] = {"A", "Qu", "E", "N", "N", "N"};
-  char *cube4[] = {"A", "E", "E", "E", "E", "M"};
-  char *cube5[] = {"A", "E", "E", "G", "M", "U"};
-  char *cube6[] = {"A", "E", "G", "M", "N", "N"};
-  char *cube7[] = {"A", "F", "I", "R", "S", "Y"};
-  char *cube8[] = {"B", "B", "J", "K", "X", "Z"};
-  char *cube9[] = {"C", "C", "E", "N", "S", "T"};
-  char *cube10[] = {"C", "E", "I", "I", "T", "T"};
-  char *cube11[] = {"C", "E", "I", "L", "P", "T"};
-  char *cube12[] = {"C", "E", "I", "P", "S", "T"};
-  char *cube13[] = {"D", "D", "H", "N", "O", "T"};
-  char *cube14[] = {"D", "H", "H", "L", "O", "R"};
-  char *cube15[] = {"D", "H", "L", "N", "O", "R"};
-  char *cube16[] = {"D", "H", "L", "N", "O", "R"};
-  char *cube17[] = {"E", "I", "I", "L", "T", "T"};
-  char *cube18[] = {"E", "M", "T", "T", "T", "O"};
-  char *cube19[] = {"E", "N", "S", "S", "S", "U"};
-  char *cube20[] = {"F", "I", "P", "R", "S", "Y"};
-  char *cube21[] = {"G", "O", "R", "R", "V", "W"};
-  char *cube22[] = {"I", "P", "R", "R", "Y", "Y"};
-  char *cube23[] = {"N", "O", "O", "T", "U", "W"};
-  char *cube24[] = {"O", "O", "O", "T", "T", "Qu"};
+  char cube0[] = {"aaafrs"};
+  char cube1[] = {"aaeeee"};
+  char cube2[] = {"aafirs"};
+  char cube3[] = {"aqennn"};
+  char cube4[] = {"aeeeem"};
+  char cube5[] = {"aeegmu"};
+  char cube6[] = {"aegmnn"};
+  char cube7[] = {"afirsy"};
+  char cube8[] = {"bbjkxz"};
+  char cube9[] = {"ccenst"};
+  char cube10[] = {"ceiitt"};
+  char cube11[] = {"ceilpt"};
+  char cube12[] = {"ceipst"};
+  char cube13[] = {"ddhnot"};
+  char cube14[] = {"dhhlor"};
+  char cube15[] = {"dhlnor"};
+  char cube16[] = {"dhlnor"};
+  char cube17[] = {"eilttt"};
+  char cube18[] = {"emttto"};
+  char cube19[] = {"ensssu"};
+  char cube20[] = {"fiprsy"};
+  char cube21[] = {"gorrvw"};
+  char cube22[] = {"iprrry"};
+  char cube23[] = {"nootuw"};
+  char cube24[] = {"ooottq"};
 
-  char **cubes[] = {
+  char *cubes[] = {
                      cube0, cube1, cube2, cube3, cube4, cube5,
                      cube6, cube7, cube8, cube9, cube10, cube11,
                      cube12, cube13, cube14, cube15, cube16, cube17,
@@ -51,7 +54,7 @@ char** createBoard(int M) // allocates memory for big boggle and fills the board
   int i = 0;
   int j = 0;
 
-  char** board = malloc(M * M * sizeof(char*));
+  char *board = (char *)malloc(M * M * sizeof(char));
 
   for(i = 0; i < M; i++)
   {
@@ -63,16 +66,15 @@ char** createBoard(int M) // allocates memory for big boggle and fills the board
     }
   }
 
-  printf("\n");
+  printf("\n\n");
   for(i = 0; i < M; i++)
   {
     for(j = 0; j < M; j++)
     {
-      printf("%s ", *(board + i*M + j));
+      printf(" %c  ", toupper(*(board + i*M + j)));
     }
-    printf("\n");
+    printf("\n\n");
   }
-  printf("\n");
 
 
   free(board);
@@ -83,7 +85,7 @@ char** createBoard(int M) // allocates memory for big boggle and fills the board
 struct Trie* initializeNode()
 {
   struct Trie* node = malloc(sizeof(struct Trie));
-  node->isEndOfWord = 0;
+  node->isLeaf = 0;
 
   int i = 0;
   for(i = 0; i < 26; i++)
@@ -94,23 +96,35 @@ struct Trie* initializeNode()
   return node;
 }
 
-void insertWord(struct Trie* dictionaryTree, char word[])
+void freeDictionary(struct Trie* tree)
+{
+  int i = 0;
+  for(i=0; i<26; i++)
+  {
+    if (tree->nextChar[i] != NULL)
+      freeDictionary(tree->nextChar[i]);
+  }
+
+  free(tree);
+}
+
+void insertWord(struct Trie* dictionaryTree, char word[], int count)
 	{
-	  int i = 0;
-	  int index = 0;
+	  if(strlen(word) == count)
+    {
+      dictionaryTree->isLeaf = 1;
+      return;
+    }
 
-	  for(i = 0; i < strlen(word); i++)
-	  {
-	    int index = word[i] - 'a';
+    int index = word[count] - 'a';
 
-	    if(dictionaryTree->nextChar[index] == NULL)
-	      dictionaryTree->nextChar[index] = initializeNode();
+    if(!dictionaryTree->nextChar[index])
+      dictionaryTree->nextChar[index] = initializeNode();
 
-	    dictionaryTree = dictionaryTree->nextChar[index];
-	  }
+    insertWord(dictionaryTree->nextChar[index], word, count + 1);
 	}
 
-	void printRules()
+void printRules()
 	{
 	  printf("\n\nPRINT RULES HERE\n\n");
 	}
@@ -144,6 +158,82 @@ void insertWord(struct Trie* dictionaryTree, char word[])
 	  return M;
 	}
 
+void resetVisits(int *visited, int M)
+{
+  for (int i = 0; i < M; i++)
+    for (int j = 0; j < M; j++)
+      *(visited + i*M + j) = 0;
+
+  return;
+}
+
+int isInRange(int X, int Y, int *visited, int M)
+{
+  if(X >= 0 && X < M && Y >= 0 && Y < M && *(visited + X*M + Y) == 0)
+    return 1;
+
+  return 0;
+}
+
+void searchDictionary(struct Trie *root, char *board, int *visited, char word[], int M, int currX, int currY, int index)
+{
+  int i = 0;
+  word[index] = '\0';
+
+  printf("2\n");
+  if(root->isLeaf == 1)
+    printf("MATCH: %s\n", word);
+
+  printf("3\n");
+
+  for(i = 0; i < 8; i++)
+  {
+    int newX = currX + DX[i];
+    int newY = currY + DY[i];
+
+    if(isInRange(currX, currY, visited, M) == 1)
+    {
+      *(visited + currX*M + currY) = 1;
+      word[index] = *(board + currX*M + currY);
+      printf("4\n");
+
+      int nextIndex = word[index] - 'a';
+      printf("5\n");
+
+      if(root->nextChar[nextIndex] != NULL)
+        searchDictionary(root->nextChar[nextIndex], board, visited, word, M, newX, newY, index + 1);
+    }
+  }
+
+  *(visited + currX*M + currY) = 0;
+
+  return;
+}
+
+void solveBoard(struct Trie *root, char *board, int *visited, int M)
+{
+
+  int i = 0;
+  int j = 0;
+  int index = 0;
+  char buildWord[30] = "";
+
+  for(i = 0; i < M; i++)
+  {
+    for(j = 0; j < M; j++)
+    {
+      int k = 0;
+      resetVisits(visited, M);
+      strcpy(buildWord, "");
+
+      buildWord[k] = *(board + i*M + j);
+      printf("1\n");
+      searchDictionary(root, board, visited, buildWord, M, i, j, index);
+    }
+  }
+
+  return;
+}
 	/*void freeDictionary(struct Trie* tree) {
 
 		int i;

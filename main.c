@@ -11,26 +11,30 @@ int main(void)
 	int M = 4;
 	int difficulty = 0;
 
+  // -------- READ DICTIONARY INTO TRIE --------
+
+  struct Trie* dictionaryTree = initializeNode();
+  FILE *fp = fopen("testdict.txt", "r");
+  char currentWord[30];
+
+  while(fscanf(fp, "%s", currentWord) != EOF)
+    insertWord(dictionaryTree, currentWord, 0);
+
+  fclose(fp);
+
+  // -------- FINISHED READING DICTIONARY --------
+
+  char* board = createBoard(M);
+
+  int *visited = (int *)malloc(M * (M+1) * sizeof(int));
+  resetVisits(visited, M);
+
   while(option != 7)
   {
     srandom((unsigned int)time(NULL)); // sets new random() seed everytime the user returns to the menu
 
-    // -------- READ DICTIONARY INTO TRIE --------
-
-    struct Trie* dictionaryTree = initializeNode();
-	  FILE *fp = fopen("dictionary.txt", "r");
-	  char currentWord[30];
-
-    while(fscanf(fp, "%s", currentWord) != EOF)
-      insertWord(dictionaryTree, currentWord);
-
-    fclose(fp);
-
-    // -------- FINISHED READING DICTIONARY --------
-
     int currentPlayer = 0;
     int numPlayers = 0;
-
     printf("\n\nWELCOME TO BOGGLE\n\n");
 
     /*
@@ -62,7 +66,7 @@ int main(void)
 	      case 1:
           printf("Which player is playing? Player #: ");
 	        currentPlayer = readInt(stdin);
-	        char** board = createBoard(M);
+          solveBoard(dictionaryTree, board, visited, M);
 	        break;
 
       // MULTIPLAYER
@@ -120,7 +124,8 @@ int main(void)
     option = 0;
   }
 
-  // free(board);
-  
+  free(board);
+  freeDictionary(dictionaryTree);
+
   return 0;
 }
