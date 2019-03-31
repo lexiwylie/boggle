@@ -14,7 +14,7 @@ int main(void)
   // -------- READ DICTIONARY INTO TRIE --------
 
   struct Trie* dictionaryTree = initializeNode();
-  FILE *fp = fopen("testdict.txt", "r");
+  FILE *fp = fopen("dictionary.txt", "r");
   char currentWord[30];
 
   while(fscanf(fp, "%s", currentWord) != EOF)
@@ -26,7 +26,7 @@ int main(void)
 
   char* board = createBoard(M);
 
-  int *visited = (int *)malloc(M * (M+1) * sizeof(int));
+  int *visited = (int *)malloc(M * M * sizeof(int));
   resetVisits(visited, M);
 
   while(option != 7)
@@ -67,6 +67,9 @@ int main(void)
           printf("Which player is playing? Player #: ");
 	        currentPlayer = readInt(stdin);
           solveBoard(dictionaryTree, board, visited, M);
+          //printWordList();
+          //free(board);
+          freeTrie(dictionaryTree);
 	        break;
 
       // MULTIPLAYER
@@ -123,9 +126,6 @@ int main(void)
     }
     option = 0;
   }
-
-  free(board);
-  freeDictionary(dictionaryTree);
 
   return 0;
 }
