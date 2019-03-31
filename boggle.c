@@ -7,8 +7,8 @@
 static int wordListSize = 0;
 static char wordList[180000];
 #define CHAR_SIZE 26
-const int DX[] = { 0, -1, -1, -1, 1, 1, 1, 0 };
-const int DY[] = { 1, 0, 1, 1, -1, 0, -1, -1 };
+const int DX[] = {1, 0, -1, 1,  1,  0, -1, -1};
+const int DY[] = {1, 1,  1, 0, -1, -1, -1,  0};
 
 struct Trie
 {
@@ -155,9 +155,9 @@ void resetVisits(int *visited, int M)
   return;
 }
 
-int isInRange(int *visited, int X, int Y, int M)
+int isInRange(int *visited, int i, int j, int M)
 {
-  if(X >= 0 && X < M && Y >= 0 && Y < M && *(visited + X*M + Y) == 0)
+  if(i >= 0 && i < M && j >= 0 && j < M && *(visited + i*M + j) == 0)
     return 1;
 
   return 0;
@@ -192,7 +192,7 @@ void searchWord(struct Trie *root, char *board, int *visited, char word[], int M
 
     for(int a = 0; a < 26; a++)
     {
-      if(root->nextChar[a] != NULL)
+      if(root->nextChar[a])
       {
         char ch = a + 'a';
 
