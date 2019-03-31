@@ -40,8 +40,8 @@ int main(void)
     /*
 
     -------------- SELECT MODE --------------
-	    If the user fails to enter a valid option or doesn't
-	    select "7 - EXIT GAME", the loop executes again.
+    If the user fails to enter a valid option or doesn't
+    select "4 - EXIT GAME", the loop executes again.
 
     */
 
@@ -59,7 +59,7 @@ int main(void)
     {
       // PLAY AGAINST COMPUTER
       case 1:
-        while(player < 1 || player > 4)
+        while(player < 1 || player > 5)
         {
           printf("\nWHO IS THE PLAYER? PLAYER # (1, 2, 3, 4, or 5): ");
           player = readInt(stdin); // read in # of current player
@@ -105,7 +105,6 @@ int main(void)
     }
     option = 0; // resets selection
     settingsOption = 0; // resets selection
-
     free(visited);
   }
 

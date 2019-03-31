@@ -10,6 +10,7 @@ char **userWords;
 int numUserWords;
 int userScore;
 int *userWordPoints;
+int compScore;
 
 int scores[6] = {0, 0, 0, 0, 0, 0};
 int wins[6] = {0, 0, 0, 0, 0, 0};
@@ -88,10 +89,11 @@ void againstComputerMode(struct Trie *dictionaryTree, char *board, int *visited,
     printf("\nTHE COMPUTER FOUND THE FOLLOWING WORDS:\n\n");
 
     count = 0;
-    while(count + chance < numUserWords)
+    while(count < numUserWords)
     {
-      printf("%s - %d POINTS\n", foundWords[numFoundWords - count - 1], foundPoints[numFoundWords - count - 1]);
-      compScore += foundPoints[numFoundWords - count - 1];
+      printf("%s - %d POINTS\n", foundWords[numFoundWords - count - 2 - chance], foundPoints[numFoundWords - count - 2 - chance]);
+      scores[5] += foundPoints[numFoundWords - count - 2 - chance];
+      compScore += foundPoints[numFoundWords - count - 2 - chance];
       count++;
     }
     printf("\nFOR A TOTAL OF %d POINTS\n", compScore);
@@ -103,11 +105,12 @@ void againstComputerMode(struct Trie *dictionaryTree, char *board, int *visited,
     printf("\nTHE COMPUTER FOUND THE FOLLOWING WORDS:\n\n");
 
     count = 0;
-    while(count + chance < numUserWords)
+    while(count < numUserWords)
     {
       int ranIndex = random() % numFoundWords;
       printf("%s - %d POINTS\n", foundWords[ranIndex], foundPoints[ranIndex]);
-      compScore += foundPoints[ranIndex];
+      scores[5] += foundPoints[ranIndex];
+      compScore += foundPoints[numFoundWords - count - 2 - chance];
       count++;
     }
     printf("\nFOR A TOTAL OF %d POINTS\n", compScore);
@@ -122,7 +125,8 @@ void againstComputerMode(struct Trie *dictionaryTree, char *board, int *visited,
     while(count + chance < numUserWords)
     {
       printf("%s - %d POINTS\n", foundWords[count], foundPoints[count]);
-      compScore += foundPoints[count];
+      scores[5] += foundPoints[count];
+      compScore += foundPoints[numFoundWords - count - 2 - chance];
       count++;
     }
     printf("\nFOR A TOTAL OF %d POINTS\n", compScore);
@@ -150,28 +154,31 @@ void againstComputerMode(struct Trie *dictionaryTree, char *board, int *visited,
     losses[p-1]++;
   }
 
-  printf("\nWOULD YOU LIKE TO SEE THE ENTIRE LIST OF POSSIBLE WORDS?\n");
-  printf("\n1 - YES\n");
-  printf("2 - NO\n");
-  printf("ENTER OPTION: ");
-  int choice = readInt(stdin);
+  int choice = 0;
+  while(choice < 1 || choice > 2)
+  {
+    printf("\nWOULD YOU LIKE TO SEE THE ENTIRE LIST OF POSSIBLE WORDS?\n");
+    printf("\n1 - YES\n");
+    printf("2 - NO\n");
+    printf("ENTER OPTION: ");
+    choice = readInt(stdin);
+  }
 
   if(choice == 1)
     printList();
 
-  resetVisits(visited, M);
   free(board);
   for(int a = 0; a < 180000; a++)
     free(foundWords[a]);
   free(foundWords);
   free(foundPoints);
   numFoundWords = 0;
-  compScore = 0;
 
   memset(userWord, '\0', 50);
   free(userWords);
   numUserWords = 0;
   userScore = 0;
+  compScore = 0;
 
   return;
 }
@@ -226,8 +233,11 @@ int setDifficulty()
   printf("2 - MEDIUM\n");
   printf("3 - HARD\n\n");
 
-  printf("WHICH DIFFICULTY WOULD YOU LIKE? ENTER OPTION: ");
-  difficulty = readInt(stdin);
+  while(difficulty < 1 || difficulty >> 3)
+  {
+    printf("WHICH DIFFICULTY WOULD YOU LIKE? ENTER OPTION: ");
+    difficulty = readInt(stdin);
+  }
   return difficulty;
 }
 

@@ -12,7 +12,6 @@ const int DY[] = {1, 1,  1, 0, -1, -1, -1,  0};
 char **foundWords;
 int *foundPoints;
 int numFoundWords = 0;
-int compScore = 0;
 
 char *createBoard(int M) // allocates memory for boggle and fills the board with cubes
 {
@@ -247,7 +246,6 @@ void solveBoard(struct Trie *dictionaryTree, char *board, int *visited, int M)
       }
     }
   }
-
   return;
 }
 
