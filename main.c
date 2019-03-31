@@ -6,10 +6,9 @@
 
 int main(void)
 {
-  int players[50];
-	int option = 0;
-	int M = 4;
-	int difficulty = 0;
+
+  int M = 4;
+  int option = 0;
 
   // -------- READ DICTIONARY INTO TRIE --------
 
@@ -24,15 +23,13 @@ int main(void)
 
   // -------- FINISHED READING DICTIONARY --------
 
-  char* board = createBoard(M);
-
-  int *visited = (int *)malloc(M * M * sizeof(int));
-  resetVisits(visited, M);
-
   while(option != 7)
   {
     srandom((unsigned int)time(NULL)); // sets new random() seed everytime the user returns to the menu
 
+    int difficulty = 0;
+
+    int players[50];
     int currentPlayer = 0;
     int numPlayers = 0;
     printf("\n\nWELCOME TO BOGGLE\n\n");
@@ -65,11 +62,19 @@ int main(void)
       // SINGLE PLAYER
 	      case 1:
           printf("Which player is playing? Player #: ");
-	        currentPlayer = readInt(stdin);
+	        currentPlayer = readInt(stdin); // read in # of current player
+
+          char* board = createBoard(M); // create board given size M
+
+          int *visited = (int *)malloc(M * M * sizeof(int)); // create 2D array of int given size M to keep track of letters visited
+          resetVisits(visited, M);
+
           solveBoard(dictionaryTree, board, visited, M);
-          //printWordList();
-          //free(board);
-          freeTrie(dictionaryTree);
+
+          // clean up
+          free(board);
+          free(visited);
+
 	        break;
 
       // MULTIPLAYER
@@ -103,10 +108,10 @@ int main(void)
         }
 
         if(settingsOption == 1)
-          setBoardSize();
+          M = setBoardSize();
 
         if(settingsOption == 2)
-          setDifficulty();
+          difficulty = setDifficulty();
 
         break;
 
@@ -127,5 +132,6 @@ int main(void)
     option = 0;
   }
 
+  freeTrie(dictionaryTree);
   return 0;
 }

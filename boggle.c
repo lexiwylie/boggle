@@ -106,9 +106,6 @@ char* createBoard(int M) // allocates memory for boggle and fills the board with
     printf("\n\n");
   }
 
-
-  free(board);
-
   return board;
 }
 
@@ -180,7 +177,7 @@ void insertList(char word[])
   wordListSize++;
 }
 
-void searchWord(struct Trie *root, char *board, int *visited, char word[], int M, int i, int j)
+void buildWord(struct Trie *root, char *board, int *visited, char word[], int M, int i, int j)
 {
 
   if(root->isLeaf == 1)
@@ -204,7 +201,7 @@ void searchWord(struct Trie *root, char *board, int *visited, char word[], int M
           if(isInRange(visited, iNew, jNew, M) == 1 && *(board + iNew*M + jNew) == ch)
           {
             strncat(word, &ch, 1);
-            searchWord(root->nextChar[a], board, visited, word, M, iNew, jNew);
+            buildWord(root->nextChar[a], board, visited, word, M, iNew, jNew);
             word[strlen(word) - 1] = '\0';
           }
         }
@@ -220,12 +217,10 @@ void searchWord(struct Trie *root, char *board, int *visited, char word[], int M
 void solveBoard(struct Trie *dictionaryTree, char *board, int *visited, int M)
 {
 
-  resetVisits(visited, M);
-
   struct Trie *root = dictionaryTree;
 
-  char buildWord[30];
-  memset(buildWord, '\0', 30);
+  char word[30];
+  memset(word, '\0', 30);
 
   for(int i = 0; i < M; i++)
   {
@@ -234,9 +229,9 @@ void solveBoard(struct Trie *dictionaryTree, char *board, int *visited, int M)
       int index = *(board + i*M + j) - 'a';
       if(root->nextChar[index] != NULL)
       {
-        strncat(buildWord, (board + i*M + j), 1);
-        searchWord(root->nextChar[index], board, visited, buildWord, M, i, j);
-        memset(buildWord, '\0', 30);
+        strncat(word, (board + i*M + j), 1);
+        buildWord(root->nextChar[index], board, visited, word, M, i, j);
+        memset(word, '\0', 30);
       }
     }
   }
