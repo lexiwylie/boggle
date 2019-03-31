@@ -3,11 +3,12 @@
 #include <string.h>
 #include <time.h>
 #include "scanner.c"
-#include "trie.c"
-#define CHAR_SIZE 26
+#include "trie.c" // #define CHAR_SIZE 26 is defined in trie.c
 
+// possible adjacent X, Y coordinates on board
 const int DX[] = {1, 0, -1, 1,  1,  0, -1, -1};
 const int DY[] = {1, 1,  1, 0, -1, -1, -1,  0};
+
 char **foundWords;
 int numFoundWords = 0;
 
@@ -77,57 +78,6 @@ char *createBoard(int M) // allocates memory for boggle and fills the board with
   return board;
 }
 
-void printRules()
-	{
-	  printf("\n\nPRINT RULES HERE\n\n");
-	}
-
-	int setDifficulty()
-	{
-	  int difficulty = 0;
-	  printf("\n\nDIFFICULTY\n\n");
-	  printf("1 - EASY\n");
-	  printf("2 - MEDIUM\n");
-	  printf("3 - HARD\n\n");
-
-	  printf("Which difficulty would you like?: ");
-	  difficulty = readInt(stdin);
-	  return difficulty;
-	}
-
-	int setBoardSize()
-	{
-	  int M = 0;
-	  printf("\n\nBOARD SIZE\n\n");
-	  printf("\nThe board size can be M x M where M is an integer greater than or equal to 4.\n");
-
-	  while(M < 4)
-	  {
-	    printf("Enter your desired M, where M is a integer greater than or equal to 4: ");
-	    M = readInt(stdin);
-	  }
-
-	  printf("\nThe board size will be %d x %d with the board containing %d total cubes.\n\n", M, M, M*M);
-	  return M;
-	}
-
-void resetVisits(int *visited, int M)
-{
-  for (int i = 0; i < M; i++)
-    for (int j = 0; j < M; j++)
-      *(visited + i*M + j) = 0;
-
-  return;
-}
-
-int isInRange(int *visited, int i, int j, int M)
-{
-  if(i >= 0 && i < M && j >= 0 && j < M && *(visited + i*M + j) == 0)
-    return 1;
-
-  return 0;
-}
-
 void insertList(char word[])
 {
 
@@ -177,12 +127,19 @@ void emptyList()
   numFoundWords = 0;
 }
 
+int isInRange(int *visited, int i, int j, int M)
+{
+  if(i >= 0 && i < M && j >= 0 && j < M && *(visited + i*M + j) == 0)
+    return 1;
+
+  return 0;
+}
+
 void buildWord(struct Trie *root, char *board, int *visited, char word[], int M, int i, int j)
 {
 
   if(root->isLeaf == 1)
     insertList(word);
-    //printf("MATCH: %s\n", word);
 
   if(isInRange(visited, i, j, M) == 1)
   {
@@ -239,6 +196,17 @@ void solveBoard(struct Trie *dictionaryTree, char *board, int *visited, int M)
       }
     }
   }
+
+  return;
+}
+
+// CLEAN UP BELOW
+
+void resetVisits(int *visited, int M)
+{
+  for (int i = 0; i < M; i++)
+    for (int j = 0; j < M; j++)
+      *(visited + i*M + j) = 0;
 
   return;
 }
