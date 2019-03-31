@@ -6,9 +6,9 @@
 
 int main(void)
 {
-
-  int M = 4;
-  int option = 0;
+  int M = 4; // board size
+  int option = 0; // menu selection
+  int settingsOption = 0; // settings selection
 
   // -------- READ DICTIONARY INTO TRIE --------
 
@@ -27,11 +27,14 @@ int main(void)
   {
     srandom((unsigned int)time(NULL)); // sets new random() seed everytime the user returns to the menu
 
-    int difficulty = 0;
+    char* board; // pointer for board
+    int *visited = (int *)malloc(M * M * sizeof(int)); // create 2D array of int given size M to keep track of letters visited
 
+    int difficulty = 0;
     int players[50];
-    int currentPlayer = 0;
     int numPlayers = 0;
+    int currentPlayer = 0;
+
     printf("\n\nWELCOME TO BOGGLE\n\n");
 
     /*
@@ -42,8 +45,8 @@ int main(void)
 
     */
 
-    printf("1 - PLAY SINGLE PLAYER\n");
-    printf("2 - PLAY MULTIPLAYER\n"); // Change wording of "Vs the Computer"
+    printf("1 - PRACTICE\n");
+    printf("2 - PLAY AGAINST LOCAL PLAYER\n");
     printf("3 - PLAY AGAINST COMPUTER\n");
     printf("4 - STATS\n");
     printf("5 - SETTINGS\n");
@@ -57,47 +60,56 @@ int main(void)
 
     switch(option)
     {
-      int settingsOption = 0;
-
-      // SINGLE PLAYER
+      // PRACTICE
 	      case 1:
-          printf("Which player is playing? Player #: ");
-	        currentPlayer = readInt(stdin); // read in # of current player
-
-          char* board = createBoard(M); // create board given size M
-
-          int *visited = (int *)malloc(M * M * sizeof(int)); // create 2D array of int given size M to keep track of letters visited
-          resetVisits(visited, M);
-
+          board = createBoard(M); // creates new board of size M
+          resetVisits(visited, M); // resets visits
           solveBoard(dictionaryTree, board, visited, M);
-
-          // clean up
           free(board);
-          free(visited);
+
+          printList();
+          free(foundWords);
+          numFoundWords = 0;
+
 
 	        break;
 
-      // MULTIPLAYER
+      // PLAY AGAINST LOCAL PLAYER
       case 2:
         while(numPlayers < 2 || numPlayers > 8)
         {
           printf("\nHow many people are playing? Multiplayer must have a minimum of 2 players but no more than 8 players.\n");
           printf("Enter the number of players: ");
           numPlayers = readInt(stdin);
+
+          printf("Which player is playing? Player #: ");
+	        currentPlayer = readInt(stdin); // read in # of current player
         }
+
+        board = createBoard(M); // creates new board of size M
+        resetVisits(visited, M); // resets visits
+        solveBoard(dictionaryTree, board, visited, M);
+        free(board);
 
         break;
 
-      // AGAINST COMPUTER
+      // PLAY AGAINST COMPUTER
       case 3:
+        board = createBoard(M); // creates new board of size M
+        resetVisits(visited, M); // resets visits
+        solveBoard(dictionaryTree, board, visited, M);
+        free(board);
+
         break;
 
       // STATS
       case 4:
+        printf("\n\nSTATS\n\n");
         break;
 
       // SETTINGS
       case 5:
+        settingsOption = 0;
         while(settingsOption < 1 || settingsOption > 2)
         {
           printf("\n\nSETTINGS\n\n");
@@ -129,7 +141,10 @@ int main(void)
       default:
         break;
     }
-    option = 0;
+    option = 0; // resets selection
+    settingsOption = 0; // resets selection
+
+    free(visited);
   }
 
   freeTrie(dictionaryTree);

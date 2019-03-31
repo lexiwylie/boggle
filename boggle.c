@@ -3,45 +3,15 @@
 #include <string.h>
 #include <time.h>
 #include "scanner.c"
-
+#include "trie.c"
 #define CHAR_SIZE 26
+
 const int DX[] = {1, 0, -1, 1,  1,  0, -1, -1};
 const int DY[] = {1, 1,  1, 0, -1, -1, -1,  0};
+char **foundWords;
+int numFoundWords = 0;
 
-struct Trie
-{
-  int isLeaf; // isLeaf = 1 when the current node is a leaf node
-  struct Trie *nextChar[CHAR_SIZE];
-};
-
-struct Trie *initializeNode()
-{
-  struct Trie *node = (struct Trie*)malloc(sizeof(struct Trie));
-  node->isLeaf = 0;
-
-  for(int i = 0; i < CHAR_SIZE; i++)
-    node->nextChar[i] = NULL;
-
-  return node;
-}
-
-void insertWord(struct Trie* dictionaryTree, char word[], int count)
-{
-	 if(strlen(word) == count)
-   {
-    dictionaryTree->isLeaf = 1;
-    return;
-   }
-
-  int index = word[count] - 'a';
-
-  if(dictionaryTree->nextChar[index] == NULL)
-    dictionaryTree->nextChar[index] = initializeNode();
-
-  insertWord(dictionaryTree->nextChar[index], word, count + 1);
-}
-
-char* createBoard(int M) // allocates memory for boggle and fills the board with cubes
+char *createBoard(int M) // allocates memory for boggle and fills the board with cubes
 {
   char cube0[] = {"aaafrs"};
   char cube1[] = {"aaeeee"};
@@ -129,7 +99,7 @@ void printRules()
 	{
 	  int M = 0;
 	  printf("\n\nBOARD SIZE\n\n");
-	  printf("\nThe board size can be M x M where M is an integer greater than or equal to 4.\n\n");
+	  printf("\nThe board size can be M x M where M is an integer greater than or equal to 4.\n");
 
 	  while(M < 4)
 	  {
@@ -158,35 +128,67 @@ int isInRange(int *visited, int i, int j, int M)
   return 0;
 }
 
-/*void insertList(char word[])
+void insertList(char word[])
 {
-  int count = 0;
 
-  while(count < wordListSize)
+  if(numFoundWords == 0)
   {
-    if(strcmp(&wordList[count], word) == 0)
-      return;
-
-    count++;
+    strcpy(foundWords[0], word);
+    numFoundWords++;
   }
 
-  printf("MATCH: %s\n", word);
-  strcpy(&wordList[count], word);
-  wordListSize++;
-}*/
+  else
+  {
+    int count = 0;
+    while(count < numFoundWords)
+    {
+      if(strcmp(foundWords[count], word) == 0)
+        return;
+
+      count++;
+    }
+
+    strcpy(foundWords[count], word);
+    numFoundWords++;
+  }
+
+  return;
+}
+
+void printList()
+{
+  int count = 0;
+  while(count < numFoundWords)
+  {
+    printf("MATCH: %s\n", foundWords[count]);
+    count++;
+  }
+}
+
+void emptyList()
+{
+  int count = 0;
+  while(count < numFoundWords)
+  {
+    memset(foundWords[count], '\0', 30);
+    printf("emptied word: %s\n", foundWords[count]);
+  }
+
+  numFoundWords = 0;
+}
 
 void buildWord(struct Trie *root, char *board, int *visited, char word[], int M, int i, int j)
 {
 
   if(root->isLeaf == 1)
-    //insertList(word);
-    printf("MATCH: %s\n", word);
+    insertList(word);
+    //printf("MATCH: %s\n", word);
 
   if(isInRange(visited, i, j, M) == 1)
   {
     *(visited + i*M + j) = 1;
 
-    for(int a = 0; a < 26; a++)
+    for(int a = 0; a < CHAR_SIZE; a++)
     {
       if(root->nextChar[a])
       {
@@ -215,6 +217,9 @@ void buildWord(struct Trie *root, char *board, int *visited, char word[], int M,
 
 void solveBoard(struct Trie *dictionaryTree, char *board, int *visited, int M)
 {
+  foundWords = malloc(180000 * sizeof(char *));
+  for(int a = 0; a < 180000; a++)
+    foundWords[a] = (char*)malloc(30);
 
   struct Trie *root = dictionaryTree;
 
@@ -236,21 +241,4 @@ void solveBoard(struct Trie *dictionaryTree, char *board, int *visited, int M)
   }
 
   return;
-}
-
-void freeNode(struct Trie* tree)
-{
-  for (int i = 0; i < 26; i++)
-		if (tree->nextChar[i] != NULL)
-			freeNode(tree->nextChar[i]);
-
-	free(tree);
-}
-
-void freeTrie(struct Trie* root)
-{
-  if (root != NULL) {
-    struct Trie* tCurrent = root;
-    freeNode(tCurrent);
-  }
 }
