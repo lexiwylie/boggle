@@ -4,8 +4,6 @@
 #include <time.h>
 #include "scanner.c"
 
-static int wordListSize = 0;
-static char wordList[180000];
 #define CHAR_SIZE 26
 const int DX[] = {1, 0, -1, 1,  1,  0, -1, -1};
 const int DY[] = {1, 1,  1, 0, -1, -1, -1,  0};
@@ -160,7 +158,7 @@ int isInRange(int *visited, int i, int j, int M)
   return 0;
 }
 
-void insertList(char word[])
+/*void insertList(char word[])
 {
   int count = 0;
 
@@ -175,13 +173,14 @@ void insertList(char word[])
   printf("MATCH: %s\n", word);
   strcpy(&wordList[count], word);
   wordListSize++;
-}
+}*/
 
 void buildWord(struct Trie *root, char *board, int *visited, char word[], int M, int i, int j)
 {
 
   if(root->isLeaf == 1)
-    insertList(word);
+    //insertList(word);
+    printf("MATCH: %s\n", word);
 
   if(isInRange(visited, i, j, M) == 1)
   {
