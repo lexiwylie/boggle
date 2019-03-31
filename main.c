@@ -3,12 +3,18 @@
 #include <string.h>
 #include <time.h>
 #include "boggle.c"
+#include "menu.c"
 
 int main(void)
 {
   int M = 4; // board size
   int option = 0; // menu selection
   int settingsOption = 0; // settings selection
+
+  int scores[10];
+  int wins[10];
+  int playerLoses[10];
+  int playerTies[10];
 
   // -------- READ DICTIONARY INTO TRIE --------
 
@@ -23,16 +29,14 @@ int main(void)
 
   // -------- FINISHED READING DICTIONARY --------
 
-  while(option != 7)
+  while(1)
   {
     srandom((unsigned int)time(NULL)); // sets new random() seed everytime the user returns to the menu
 
-    char* board; // pointer for board
+    char* board; // points to board
     int *visited = (int *)malloc(M * M * sizeof(int)); // create 2D array of int given size M to keep track of letters visited
 
     int difficulty = 0;
-    int players[50];
-    int numPlayers = 0;
     int currentPlayer = 0;
 
     printf("\n\nWELCOME TO BOGGLE\n\n");
@@ -61,30 +65,22 @@ int main(void)
     switch(option)
     {
       // PRACTICE
-	      case 1:
-          board = createBoard(M); // creates new board of size M
-          resetVisits(visited, M); // resets visits
-          solveBoard(dictionaryTree, board, visited, M);
-          free(board);
+	    case 1:
+        practiceMode(dictionaryTree, board, visited, M);
 
-          printList();
-          free(foundWords);
-          numFoundWords = 0;
+        //clean up
+        free(board);
+        resetVisits(visited, M);
+        free(foundWords);
+        numFoundWords = 0;
 
-
-	        break;
+	      break;
 
       // PLAY AGAINST LOCAL PLAYER
       case 2:
-        while(numPlayers < 2 || numPlayers > 8)
-        {
-          printf("\nHow many people are playing? Multiplayer must have a minimum of 2 players but no more than 8 players.\n");
-          printf("Enter the number of players: ");
-          numPlayers = readInt(stdin);
 
-          printf("Which player is playing? Player #: ");
-	        currentPlayer = readInt(stdin); // read in # of current player
-        }
+        printf("Which player is playing? Player #: ");
+	      currentPlayer = readInt(stdin); // read in # of current player
 
         board = createBoard(M); // creates new board of size M
         resetVisits(visited, M); // resets visits

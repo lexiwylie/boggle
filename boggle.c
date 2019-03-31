@@ -10,6 +10,7 @@ const int DX[] = {1, 0, -1, 1,  1,  0, -1, -1};
 const int DY[] = {1, 1,  1, 0, -1, -1, -1,  0};
 
 char **foundWords;
+int *foundPoints;
 int numFoundWords = 0;
 
 char *createBoard(int M) // allocates memory for boggle and fills the board with cubes
@@ -65,17 +66,22 @@ char *createBoard(int M) // allocates memory for boggle and fills the board with
     }
   }
 
+  return board;
+}
+
+void printBoard(char *board, int M)
+{
   printf("\n\n");
-  for(i = 0; i < M; i++)
+  for(int i = 0; i < M; i++)
   {
-    for(j = 0; j < M; j++)
+    for(int j = 0; j < M; j++)
     {
       printf(" %c  ", toupper(*(board + i*M + j)));
     }
     printf("\n\n");
   }
 
-  return board;
+  return;
 }
 
 void insertList(char word[])
@@ -100,8 +106,29 @@ void insertList(char word[])
 
     strcpy(foundWords[count], word);
     numFoundWords++;
+
+    if(strlen(word) == 3 || strlen(word) == 4)
+      foundPoints[count] = 1;
+
+    else if(strlen(word) == 5)
+      foundPoints[count] = 2;
+
+    else if(strlen(word) == 6)
+      foundPoints[count] = 3;
+
+    else if(strlen(word) == 7)
+      foundPoints[count] = 5;
+
+    else
+      foundPoints[count] = 11;
   }
 
+  return;
+}
+
+void sortListByPoints()
+{
+  
   return;
 }
 
@@ -115,18 +142,6 @@ void printList()
   }
 }
 
-void emptyList()
-{
-  int count = 0;
-  while(count < numFoundWords)
-  {
-    memset(foundWords[count], '\0', 30);
-    printf("emptied word: %s\n", foundWords[count]);
-  }
-
-  numFoundWords = 0;
-}
-
 int isInRange(int *visited, int i, int j, int M)
 {
   if(i >= 0 && i < M && j >= 0 && j < M && *(visited + i*M + j) == 0)
@@ -138,7 +153,7 @@ int isInRange(int *visited, int i, int j, int M)
 void buildWord(struct Trie *root, char *board, int *visited, char word[], int M, int i, int j)
 {
 
-  if(root->isLeaf == 1)
+  if(root->isLeaf == 1 && strlen(word) >= 3)
     insertList(word);
 
   if(isInRange(visited, i, j, M) == 1)
@@ -197,10 +212,12 @@ void solveBoard(struct Trie *dictionaryTree, char *board, int *visited, int M)
     }
   }
 
+  sortListByPoints();
+
   return;
 }
 
-// CLEAN UP BELOW
+// CLEAN UP
 
 void resetVisits(int *visited, int M)
 {
@@ -209,4 +226,10 @@ void resetVisits(int *visited, int M)
       *(visited + i*M + j) = 0;
 
   return;
+}
+
+void practiceMode(struct Trie *dictionaryTree, char *board, int *visited, int M)
+{
+  board = createBoard(M); // creates new board of size M
+  solveBoard(dictionaryTree, board, visited, M); // stores found words in foundWords[] and their corresponding points in foundPoints
 }
