@@ -50,7 +50,7 @@ int main(void)
     printf("5 - EXIT GAME\n");
     while(option < 1 || option > 5)
     {
-      printf("ENTER OPTION: ");
+      printf("\nENTER OPTION #: ");
       option = readInt(stdin);
     }
 

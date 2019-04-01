@@ -39,6 +39,8 @@ void practiceMode(struct Trie *dictionaryTree, char *board, int *visited, int M)
   int count = 0;
   int isDup = 0;
 
+  unsigned int timeP = time(0) + 180;
+
   while(strcmp(userWord, "q") != 0)
   {
     count = 0;
@@ -62,6 +64,7 @@ void practiceMode(struct Trie *dictionaryTree, char *board, int *visited, int M)
       }
       count++;
     }
+    if (time(0) > timeP) break;
     scanf("%s", userWord);
     userWord[strlen(userWord)] = '\0';
   }
