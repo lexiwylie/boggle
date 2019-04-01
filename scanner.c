@@ -1,3 +1,10 @@
+/*
+I "borrowed" scanner.c and scanner.h from
+
+wget troll.cs.ua.edu/ACP-C/scanner.h wget troll.cs.ua.edu/ACP-C/scanner.c
+
+in order to ensure valid input.*/
+
 #include <stdio.h>
 #include <stdlib.h>  /* for exit, malloc, realloc */
 #include <ctype.h>   /* for isspace */
