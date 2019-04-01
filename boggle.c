@@ -16,86 +16,6 @@ int wins[6] = {0, 0, 0, 0, 0, 0};
 int losses[6] = {0, 0, 0, 0, 0, 0};
 int ties[6] = {0, 0, 0, 0, 0, 0};
 
-
-void practiceMode(struct Trie *dictionaryTree, char *board, int *visited, int M)
-{
-  board = createBoard(M); // creates new board of size M
-  solveBoard(dictionaryTree, board, visited, M);
-  sortListByLength();
-  scorePoints();
-
-  printf("\nPRACTICE MODE\n");
-  printf("\nYou have three minutes to find words. Enter q to quit early. Go!\n");
-  printBoard(board, M);
-
-  userWords = malloc(1000 * sizeof(char *));
-  for(int i = 0; i < 1000; i++)
-    userWords[i] = (char *)malloc(50);
-
-  userWordPoints = malloc(1000 * sizeof(int));
-
-  scanf("%s", userWord);
-  userWord[strlen(userWord)] = '\0';
-  int count = 0;
-  int isDup = 0;
-
-  unsigned int timeP = time(0) + 180;
-
-  while(strcmp(userWord, "q") != 0)
-  {
-    count = 0;
-    while(count < numFoundWords)
-    {
-      if(strcmp(foundWords[count], userWord) == 0)
-      {
-        for(int i = 0; i < numUserWords; i++)
-        {
-          if(strcmp(userWords[i], userWord)) // check if word has already been found
-            isDup = 1;
-        }
-
-        if(isDup != 1)
-        {
-          strcpy(userWords[numUserWords], foundWords[count]);
-          userWordPoints[numUserWords] = foundPoints[count];
-          userScore += foundPoints[count];
-          numUserWords++;
-        }
-      }
-      count++;
-    }
-    if (time(0) > timeP) break;
-    scanf("%s", userWord);
-    userWord[strlen(userWord)] = '\0';
-  }
-
-  printf("\nYOU FOUND THE FOLLOWING WORDS:\n\n");
-
-  count = 0;
-  while(count < numUserWords)
-  {
-    printf("%s - %d POINTS\n", userWords[count], userWordPoints[count]);
-    count++;
-  }
-  printf("\nFOR A TOTAL OF %d POINTS\n\n", userScore);
-
-  resetVisits(visited, M);
-  free(board);
-  for(int a = 0; a < 180000; a++)
-    free(foundWords[a]);
-  free(foundWords);
-  free(foundPoints);
-  numFoundWords = 0;
-  compScore = 0;
-
-  memset(userWord, '\0', 50);
-  free(userWords);
-  numUserWords = 0;
-  userScore = 0;
-
-  return;
-}
-
 void againstComputerMode(struct Trie *dictionaryTree, char *board, int *visited, int M, int diff, int p)
 {
   printf("%d\n", diff);
@@ -118,20 +38,23 @@ void againstComputerMode(struct Trie *dictionaryTree, char *board, int *visited,
   int count = 0;
   int isDup = 0;
 
-  while (strcmp(userWord, "q") != 0)
+  unsigned int timeP = time(0) + 180;
+
+  while(strcmp(userWord, "q") != 0)
   {
     count = 0;
+    isDup = 0;
     while(count < numFoundWords)
     {
       if(strcmp(foundWords[count], userWord) == 0)
       {
         for(int i = 0; i < numUserWords; i++)
         {
-          if(strcmp(userWords[i], userWord)) // check if word has already been found
-            isDup = -1;
+          if(strcmp(userWords[i], userWord) == 0) // check if word has already been found
+            isDup = 1;
         }
 
-        if(isDup != -1)
+        if(isDup != 1)
         {
           strcpy(userWords[numUserWords], foundWords[count]);
           userWordPoints[numUserWords] = foundPoints[count];
@@ -141,12 +64,15 @@ void againstComputerMode(struct Trie *dictionaryTree, char *board, int *visited,
       }
       count++;
     }
+    if (time(0) > timeP) break;
     scanf("%s", userWord);
+    userWord[strlen(userWord)] = '\0';
   }
 
   printf("\nYOU FOUND THE FOLLOWING WORDS:\n\n");
 
   count = 0;
+
   while(count < numUserWords)
   {
     printf("%s - %d POINTS\n", userWords[count], userWordPoints[count]);
@@ -205,21 +131,33 @@ void againstComputerMode(struct Trie *dictionaryTree, char *board, int *visited,
   scores[p] += userScore;
   if(userScore > compScore)
   {
+    printf("\nYOU WIN!\n");
     wins[p]++;
     losses[5]++;
   }
 
   else if(userScore == compScore)
   {
+    printf("\nYOU TIED!\n");
     ties[p]++;
     ties[5]++;
   }
 
   else if(userScore < compScore)
   {
+    printf("\nYOU LOSE!\n");
     wins[5]++;
     losses[p]++;
   }
+
+  printf("\nWOULD YOU LIKE TO SEE THE ENTIRE LIST OF POSSIBLE WORDS?\n");
+  printf("\n1 - YES\n");
+  printf("2 - NO\n");
+  printf("ENTER OPTION: ");
+  int choice = readInt(stdin);
+
+  if(choice == 1)
+    printList();
 
   resetVisits(visited, M);
   free(board);
@@ -288,7 +226,7 @@ int setDifficulty()
   printf("2 - MEDIUM\n");
   printf("3 - HARD\n\n");
 
-  printf("Which difficulty would you like?: ");
+  printf("WHICH DIFFICULTY WOULD YOU LIKE? ENTER OPTION: ");
   difficulty = readInt(stdin);
   return difficulty;
 }
@@ -297,14 +235,14 @@ int setBoardSize()
 {
   int M = 0;
   printf("\n\nBOARD SIZE\n\n");
-  printf("\nThe board size can be M x M where M is an integer greater than or equal to 4.\n");
+  printf("\nTHE BOARD SIZE CAN BE M x M WHERE M IS AN INTEGER GREATER THAN OR EQUAL TO 4.\n");
 
   while(M < 4)
   {
-    printf("Enter your desired M, where M is a integer greater than or equal to 4: ");
+    printf("ENTER YOUR DESIRED M, WHERE M IS AN INTEGER GREATER THAN OR EQUAL TO 4: ");
     M = readInt(stdin);
   }
 
-  printf("\nThe board size will be %d x %d with the board containing %d total cubes.\n\n", M, M, M*M);
+  printf("\nTHE BOARD SIZE WILL BE %d x %d WITH THE BOARD CONTAINING %d TOTAL CUBES.\n\n", M, M, M*M);
   return M;
 }

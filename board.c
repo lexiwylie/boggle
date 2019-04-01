@@ -79,7 +79,7 @@ void printBoard(char *board, int M)
     {
       printf(" %c  ", toupper(*(board + i*M + j)));
     }
-    printf("\n\n");
+    printf("\n\n");  
   }
 
   return;
@@ -87,10 +87,11 @@ void printBoard(char *board, int M)
 
 void printList()
 {
+  printf("\nLIST OF POSSIBLE WORDS:\n\n");
   int count = 0;
   while(count < numFoundWords)
   {
-    printf("WORD: %s POINTS: %d\n", foundWords[count], foundPoints[count]);
+    printf("WORD: %s - POINTS: %d\n", foundWords[count], foundPoints[count]);
     count++;
   }
 }

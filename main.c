@@ -33,7 +33,9 @@ int main(void)
 
     int player = 0;
 
-    printf("\n\nWELCOME TO BOGGLE\n\n");
+    printf("\n - - - - - - - - - -");
+    printf("\n| WELCOME TO BOGGLE |\n");
+    printf(" - - - - - - - - - -\n\n");
 
     /*
 
@@ -43,11 +45,10 @@ int main(void)
 
     */
 
-    printf("1 - PRACTICE\n");
-    printf("2 - PLAY AGAINST COMPUTER\n");
-    printf("3 - STATS\n");
-    printf("4 - SETTINGS\n");
-    printf("5 - EXIT GAME\n");
+    printf("1 - PLAY\n");
+    printf("2 - STATS\n");
+    printf("3 - SETTINGS\n");
+    printf("4 - EXIT GAME\n");
     while(option < 1 || option > 5)
     {
       printf("\nENTER OPTION #: ");
@@ -56,16 +57,11 @@ int main(void)
 
     switch(option)
     {
-      // PRACTICE (SINGLE PLAYER)
-	    case 1:
-        practiceMode(dictionaryTree, board, visited, M);
-	      break;
-
       // PLAY AGAINST COMPUTER
-      case 2:
-        while(player < 1 || player > 5)
+      case 1:
+        while(player < 1 || player > 4)
         {
-          printf("Who is the  player? Player # (1, 2, 3, 4, or 5): ");
+          printf("\nWHO IS THE PLAYER? PLAYER # (1, 2, 3, 4, or 5): ");
           player = readInt(stdin); // read in # of current player
         }
 
@@ -74,19 +70,19 @@ int main(void)
         break;
 
       // STATS
-      case 3:
+      case 2:
         printStats();
         break;
 
       // SETTINGS
-      case 4:
+      case 3:
         settingsOption = 0;
         while(settingsOption < 1 || settingsOption > 2)
         {
           printf("\n\nSETTINGS\n\n");
           printf("1 - BOARD SIZE\n");
           printf("2 - DIFFICULTY\n\n");
-          printf("ENTER OPTION: ");
+          printf("\nENTER OPTION: ");
           settingsOption = readInt(stdin);
         }
 
@@ -99,7 +95,7 @@ int main(void)
         break;
 
       // EXIT GAME
-      case 5:
+      case 4:
         exit(1);
         break;
 
