@@ -13,13 +13,13 @@ Then, replace "dictionary.txt" in main with the name of your file.
 Run the following command to execute the game:
 
 ```
-make
+gcc main.c -std=c11
 ```
 
 then run
 
 ```
-./boggle
+./a.out
 ```
 
 to start the game.
