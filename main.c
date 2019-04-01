@@ -3,24 +3,19 @@
 #include <string.h>
 #include <time.h>
 #include "boggle.c"
-#include "menu.c"
 
 int main(void)
 {
   int M = 4; // board size
   int option = 0; // menu selection
   int settingsOption = 0; // settings selection
-
-  int scores[10];
-  int wins[10];
-  int playerLoses[10];
-  int playerTies[10];
+  int difficulty = 1;
 
   // -------- READ DICTIONARY INTO TRIE --------
 
   struct Trie* dictionaryTree = initializeNode();
   FILE *fp = fopen("dictionary.txt", "r");
-  char currentWord[30];
+  char currentWord[50];
 
   while(fscanf(fp, "%s", currentWord) != EOF)
     insertWord(dictionaryTree, currentWord, 0);
@@ -36,8 +31,7 @@ int main(void)
     char* board; // points to board
     int *visited = (int *)malloc(M * M * sizeof(int)); // create 2D array of int given size M to keep track of letters visited
 
-    int difficulty = 0;
-    int currentPlayer = 0;
+    int player = 0;
 
     printf("\n\nWELCOME TO BOGGLE\n\n");
 
@@ -50,13 +44,11 @@ int main(void)
     */
 
     printf("1 - PRACTICE\n");
-    printf("2 - PLAY AGAINST LOCAL PLAYER\n");
-    printf("3 - PLAY AGAINST COMPUTER\n");
-    printf("4 - STATS\n");
-    printf("5 - SETTINGS\n");
-    printf("6 - RULES\n");
-    printf("7 - EXIT GAME\n\n");
-    while(option < 1 || option > 7)
+    printf("2 - PLAY AGAINST COMPUTER\n");
+    printf("3 - STATS\n");
+    printf("4 - SETTINGS\n");
+    printf("5 - EXIT GAME\n");
+    while(option < 1 || option > 5)
     {
       printf("ENTER OPTION: ");
       option = readInt(stdin);
@@ -64,47 +56,30 @@ int main(void)
 
     switch(option)
     {
-      // PRACTICE
+      // PRACTICE (SINGLE PLAYER)
 	    case 1:
         practiceMode(dictionaryTree, board, visited, M);
-
-        //clean up
-        free(board);
-        resetVisits(visited, M);
-        free(foundWords);
-        numFoundWords = 0;
-
 	      break;
 
-      // PLAY AGAINST LOCAL PLAYER
-      case 2:
-
-        printf("Which player is playing? Player #: ");
-	      currentPlayer = readInt(stdin); // read in # of current player
-
-        board = createBoard(M); // creates new board of size M
-        resetVisits(visited, M); // resets visits
-        solveBoard(dictionaryTree, board, visited, M);
-        free(board);
-
-        break;
-
       // PLAY AGAINST COMPUTER
-      case 3:
-        board = createBoard(M); // creates new board of size M
-        resetVisits(visited, M); // resets visits
-        solveBoard(dictionaryTree, board, visited, M);
-        free(board);
+      case 2:
+        while(player < 1 || player > 5)
+        {
+          printf("Who is the  player? Player # (1, 2, 3, 4, or 5): ");
+          player = readInt(stdin); // read in # of current player
+        }
+
+        againstComputerMode(dictionaryTree, board, visited, M, difficulty, player);
 
         break;
 
       // STATS
-      case 4:
-        printf("\n\nSTATS\n\n");
+      case 3:
+        printStats();
         break;
 
       // SETTINGS
-      case 5:
+      case 4:
         settingsOption = 0;
         while(settingsOption < 1 || settingsOption > 2)
         {
@@ -123,13 +98,8 @@ int main(void)
 
         break;
 
-      // RULES
-      case 6:
-        printRules();
-        break;
-
       // EXIT GAME
-      case 7:
+      case 5:
         exit(1);
         break;
 

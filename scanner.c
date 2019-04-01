@@ -51,7 +51,7 @@ static void *reallocateMsg(void *s,size_t size,char *where);
  *        the caller should free the returned string
  *      - returns 0 if end of file; feof will subsequently return true
  *      - usage example: char *x = readLine(stdin);
- *    stringPending(FILE *fp) 
+ *    stringPending(FILE *fp)
  *      - returns true (non-zero) if the next non-whitespace character
  *        is a double quote
  *      - it consumes all the whitespace up to that non-whitespace character
@@ -73,66 +73,8 @@ readInt(FILE *fp)
         }
     if (result == 0)
         {
-        fprintf(stderr,"SCAN ERROR: attempt to read an integer failed\n");
-        fprintf(stderr,"offending character was <%c>\n",fgetc(fp));
+        fprintf(stderr,"YOU DID NOT ENTER AN INTEGER. EXITING GAME.\n");
         exit(1);
-        }
-    return x;
-    }
-
-double
-readReal(FILE *fp)
-    {
-    int result;
-    double x;
-    result = fscanf(fp," %lf",&x);
-    if (result == EOF)
-        {
-        return 0.0;
-        }
-    if (result == 0)
-        {
-        fprintf(stderr,"SCAN ERROR: attempt to read a real number failed\n");
-        fprintf(stderr,"offending character was <%c>\n",fgetc(fp));
-        exit(2);
-        }
-    return x;
-    }
-
-char
-readChar(FILE *fp)
-    {
-    int result;
-    char x;
-    result = fscanf(fp," %c",&x);
-    if (result == EOF)
-        {
-        return EOF;
-        }
-    if (result == 0)
-        {
-        fprintf(stderr,"SCAN ERROR: attempt to read a non-whitespace character failed\n");
-        fprintf(stderr,"offending character was <%c>\n",fgetc(fp));
-        exit(2);
-        }
-    return x;
-    }
-
-char
-readRawChar(FILE *fp)
-    {
-    int result;
-    char x;
-    result = fscanf(fp,"%c",&x);
-    if (result == EOF)
-        {
-        return EOF;
-        }
-    if (result == 0)
-        {
-        fprintf(stderr,"SCAN ERROR: attempt to read a raw character failed\n");
-        fprintf(stderr,"offending character was <%c>\n",fgetc(fp));
-        exit(2);
         }
     return x;
     }
@@ -257,7 +199,7 @@ readLine(FILE *fp)
     int ch,index;
     char *buffer;
     int size = 512;
-    
+
     ch = fgetc(fp);
     if (ch == EOF) return 0;
 
