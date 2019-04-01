@@ -79,7 +79,7 @@ void printBoard(char *board, int M)
     {
       printf(" %c  ", toupper(*(board + i*M + j)));
     }
-    printf("\n\n");  
+    printf("\n\n");
   }
 
   return;
@@ -98,7 +98,6 @@ void printList()
 
 void insertList(char word[])
 {
-
   if(numFoundWords == 0)
   {
     word[strlen(word)] = '\0';

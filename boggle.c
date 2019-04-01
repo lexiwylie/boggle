@@ -18,7 +18,6 @@ int ties[6] = {0, 0, 0, 0, 0, 0};
 
 void againstComputerMode(struct Trie *dictionaryTree, char *board, int *visited, int M, int diff, int p)
 {
-  printf("%d\n", diff);
   board = createBoard(M); // creates new board of size M
   solveBoard(dictionaryTree, board, visited, M);
   sortListByLength();
@@ -35,6 +34,7 @@ void againstComputerMode(struct Trie *dictionaryTree, char *board, int *visited,
   userWordPoints = malloc(1000 * sizeof(int));
 
   scanf("%s", userWord);
+  userWord[strlen(userWord)] = '\0';
   int count = 0;
   int isDup = 0;
 
@@ -128,18 +128,18 @@ void againstComputerMode(struct Trie *dictionaryTree, char *board, int *visited,
     printf("\nFOR A TOTAL OF %d POINTS\n", compScore);
   }
 
-  scores[p] += userScore;
+  scores[p-1] += userScore;
   if(userScore > compScore)
   {
     printf("\nYOU WIN!\n");
-    wins[p]++;
+    wins[p-1]++;
     losses[5]++;
   }
 
   else if(userScore == compScore)
   {
     printf("\nYOU TIED!\n");
-    ties[p]++;
+    ties[p-1]++;
     ties[5]++;
   }
 
@@ -147,7 +147,7 @@ void againstComputerMode(struct Trie *dictionaryTree, char *board, int *visited,
   {
     printf("\nYOU LOSE!\n");
     wins[5]++;
-    losses[p]++;
+    losses[p-1]++;
   }
 
   printf("\nWOULD YOU LIKE TO SEE THE ENTIRE LIST OF POSSIBLE WORDS?\n");

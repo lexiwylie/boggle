@@ -11,7 +11,7 @@ int main(void)
   int settingsOption = 0; // settings selection
   int difficulty = 1;
 
-  // -------- READ DICTIONARY INTO TRIE --------
+  // -------- READ DICTIONARY INTO TRIE ---------
 
   struct Trie* dictionaryTree = initializeNode();
   FILE *fp = fopen("dictionary.txt", "r");
