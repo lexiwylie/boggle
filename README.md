@@ -10,7 +10,7 @@ To upload your own dictionary file, be sure it satisfies the following condition
 
 Then, replace "dictionary.txt" in main with the name of your file.
 
-Run the following command to execute the game:
+NOTE: In the video walkthrough, I executed 'make.' However, you should run the following command to execute the game:
 
 ```
 gcc main.c -std=c11
@@ -31,11 +31,11 @@ board visibiltiy. The default board size is M = 4. To change the board size, nav
 
 To change the level of difficulty, navigate to SETTINGS -> DIFFICULTY.
 
-To view your stats, navigate to SETTINGS -> STATS. Keep in mind, the game can only store up to 5 player's stats.
+To view your stats, navigate to STATS. Keep in mind, the game can only store up to 5 players' stats.
 
-To ensure you enter valid words, enter  words in all lowercase and press enter before entering an additional word.
+To ensure you play valid words during game play, type words in all lowercase and press 'enter' before submitting an additional word.
 
-Inputting invalid input will either exit the game or prompt you to enter input once again. 
+Inputting invalid input will either exit the game or prompt you to enter the input again. 
 
 # Citations
 
@@ -44,4 +44,4 @@ I "borrowed" scanner.c and scanner.h from
 wget troll.cs.ua.edu/ACP-C/scanner.h 
 wget troll.cs.ua.edu/ACP-C/scanner.c
 
-in order to ensure valid input.
+in order to ensure invalid input didn't crash my code.
