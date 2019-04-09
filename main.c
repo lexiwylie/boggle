@@ -29,7 +29,7 @@ int main(void)
     srandom((unsigned int)time(NULL)); // sets new random() seed everytime the user returns to the menu
 
     char* board; // points to board
-    int *visited = (int *)malloc(M * M * sizeof(int)); // create 2D array of int given size M to keep track of letters visited
+    int *visited; // create 2D array of int given size M to keep track of letters visited
 
     int player = 0;
 
@@ -105,7 +105,6 @@ int main(void)
     }
     option = 0; // resets selection
     settingsOption = 0; // resets selection
-    free(visited);
   }
 
   freeTrie(dictionaryTree);

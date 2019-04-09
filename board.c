@@ -175,6 +175,15 @@ void scorePoints()
   return;
 }
 
+void resetVisits(int *visited, int M)
+{
+  for (int i = 0; i < M; i++)
+    for (int j = 0; j < M; j++)
+      *(visited + i*M + j) = 0;
+
+  return;
+}
+
 int isInRange(int *visited, int i, int j, int M)
 {
   if(i >= 0 && i < M && j >= 0 && j < M && *(visited + i*M + j) == 0)
@@ -222,6 +231,9 @@ void buildWord(struct Trie *root, char *board, int *visited, char word[], int M,
 
 void solveBoard(struct Trie *dictionaryTree, char *board, int *visited, int M)
 {
+  visited = (int *)malloc(M * M * sizeof(int));
+  resetVisits(visited, M);
+
   foundWords = malloc(180000 * sizeof(char *));
   for(int a = 0; a < 180000; a++)
     foundWords[a] = (char*)malloc(50);
@@ -246,14 +258,7 @@ void solveBoard(struct Trie *dictionaryTree, char *board, int *visited, int M)
       }
     }
   }
-  return;
-}
 
-void resetVisits(int *visited, int M)
-{
-  for (int i = 0; i < M; i++)
-    for (int j = 0; j < M; j++)
-      *(visited + i*M + j) = 0;
-
+  free(visited);
   return;
 }
